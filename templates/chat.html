@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboTutor - Educational Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="chatbot-container">
+        <header>
+            <h1 class="heading"><span>E</span><span>D</span><span>X</span><span>B</span><span>O</span><span>T</span></h1>
+            <img src="{{ url_for('static', filename='chip.png') }}" alt="Robot Icon" class="robot-icon">
+        </header>
+        <div class="chat-container" id="chat-container">
+            <div class="chat">
+                <div class="chat-bubble robot">Hi there! How can I assist you today?</div>
+            </div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <input type="file" id="image-input" accept="image/*">
+            <button id="record-btn">Record</button>
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            sendUserInput();
+        });
+
+        document.getElementById('user-input').addEventListener('keypress', function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                sendUserInput();
+            }
+        });
+
+        document.getElementById('record-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+            startRecording();
+        });
+
+        function sendUserInput() {
+            var userInput = document.getElementById('user-input').value;
+            var imageInput = document.getElementById('image-input').files[0];
+            
+            var formData = new FormData();
+            formData.append('user_input', userInput);
+            formData.append('image', imageInput);
+            
+            fetch('/process_chat', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                appendChat("user", userInput);
+                appendChat("robot", data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    recorder = new MediaRecorder(stream);
+                    var chunks = [];
+
+                    recorder.ondataavailable = function(e) {
+                        chunks.push(e.data);
+                    }
+
+                    recorder.onstop = function() {
+                        var audioBlob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+                        var audioUrl = URL.createObjectURL(audioBlob);
+
+                        var audioInput = new FormData();
+                        audioInput.append('audio', audioBlob);
+                        audioInput.append('user_input', '');
+
+                        fetch('/process_chat', {
+                            method: 'POST',
+                            body: audioInput
+                        })
+                        .then(response => response.text())
+                        .then(data => {
+                            appendChat("user", "");
+                            appendChat("robot", data);
+                        })
+                        .catch(error => console.error('Error:', error));
+                    };
+
+                    recorder.start();
+                    setTimeout(function() {
+                        recorder.stop();
+                    }, 5000); // Adjust recording duration as needed
+                })
+                .catch(function(err) {
+                    console.error('Error:', err);
+                });
+        }
+
+        function appendChat(role, message) {
+            var chatContainer = document.getElementById('chat-container');
+            var chatBubble = document.createElement('div');
+            chatBubble.classList.add('chat-bubble');
+            chatBubble.classList.add(role);
+            chatBubble.innerText = message;
+            chatContainer.appendChild(chatBubble);
+            document.getElementById('user-input').value = ''; // Clear input field after sending
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom of chat
+        }
+    </script>
+</body>
+</html>

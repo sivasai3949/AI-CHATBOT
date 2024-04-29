@@ -1,0 +1,89 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.chatbot-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+}
+
+.heading {
+  margin: 0;
+  font-size: 36px;
+  font-family: 'Times New Roman', serif;
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  color: transparent; /* Make the text transparent */
+  -webkit-background-clip: text; /* For WebKit-based browsers */
+  background-clip: text; /* Standard property for other browsers */
+}
+
+/* Add span styling for each letter */
+
+.robot-icon {
+  width: 40px;
+  margin-left: 10px;
+}
+
+.chat-container {
+  height: 300px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.user {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.robot {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.input-container {
+  display: flex;
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  margin-right: 10px;
+}
+
+#send-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
