@@ -1,8 +1,5 @@
 import streamlit as st
-import openai
-import io
-from PIL import Image
-import os
+import requests
 
 # Set your OpenAI API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -29,6 +26,20 @@ def main():
             st.write("You:", user_input)
             response = get_ai_response(user_input)
             st.write("Bot:", response)
+
+    # Allow users to upload images
+    image_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
+    if image_file:
+        st.write("Image uploaded successfully.")
+        # Process the uploaded image
+        # process_image(image_file.read())
+
+    # Allow users to upload audio files
+    audio_file = st.file_uploader("Upload Audio", type=["mp3", "wav"])
+    if audio_file:
+        st.write("Audio uploaded successfully.")
+        # Process the uploaded audio
+        # process_audio(audio_file.read())
 
 if __name__ == "__main__":
     main()
