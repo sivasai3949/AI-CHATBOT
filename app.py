@@ -11,7 +11,7 @@ def get_ai_response(input_text, api_key):
     }
 
     data = {
-        "model": "text-davinci-003",  # Use the appropriate model
+        "model": "gpt-3.5-turbo",  # Updated model
         "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": input_text}
