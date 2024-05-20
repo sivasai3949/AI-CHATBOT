@@ -25,7 +25,7 @@ def get_ai_response(input_text, api_key, conversation_history):
         return "Error: Failed to get response from OpenAI API"
 
 def main():
-    st.title("RoboTutor - Educational Chatbot")
+    st.title("AI COUNSELLOR")
     st.write("Hi there! How can I assist you today?")
 
     if 'conversation_history' not in st.session_state:
@@ -43,7 +43,7 @@ def main():
             st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
             st.session_state.chat_log.append(("You", user_input))
-            st.session_state.chat_log.append(("Bot", response))
+            st.session_state.chat_log.append(("Counsellor", response))
 
     # Display the conversation history
     for sender, message in st.session_state.chat_log:
