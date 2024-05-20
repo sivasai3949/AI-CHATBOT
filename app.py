@@ -44,10 +44,6 @@ def main():
             st.write("You:", user_input)
             st.write("Bot:", response)
 
-    if st.button("Clear Conversation"):
-        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
-        st.write("Conversation cleared!")
-
     # Display the conversation history
     for message in st.session_state.conversation_history:
         if message["role"] == "user":
