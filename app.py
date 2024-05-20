@@ -11,7 +11,7 @@ def get_ai_response(input_text, api_key, conversation_history):
     }
 
     data = {
-        "model": "gpt-3.5-turbo",  # Updated model
+        "model": "gpt-3.5-turbo",
         "messages": conversation_history + [
             {"role": "user", "content": input_text}
         ]
@@ -22,35 +22,38 @@ def get_ai_response(input_text, api_key, conversation_history):
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"]
     else:
-        # Handle error response
         return "Error: Failed to get response from OpenAI API"
 
 def main():
     st.title("RoboTutor - Educational Chatbot")
-
     st.write("Hi there! How can I assist you today?")
 
-    conversation_history = []
+    if 'conversation_history' not in st.session_state:
+        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
 
-    while True:
-        user_input = st.text_input("You:")
+    user_input = st.text_input("Type your message...")
 
-        api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
+    api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-        if st.button("Send"):
-            if user_input:
-                conversation_history.append({"role": "user", "content": user_input})
-                response = get_ai_response(user_input, api_key, conversation_history)
-                conversation_history.append({"role": "bot", "content": response})
-                st.write("Bot:", response)
-            else:
-                st.write("Please type something.")
+    if st.button("Send"):
+        if user_input:
+            st.session_state.conversation_history.append({"role": "user", "content": user_input})
+            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
+            st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-        if st.button("Clear Conversation"):
-            conversation_history = []
+            st.write("You:", user_input)
+            st.write("Bot:", response)
 
-        if st.button("End Conversation"):
-            break
+    if st.button("Clear Conversation"):
+        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
+        st.write("Conversation cleared!")
+
+    # Display the conversation history
+    for message in st.session_state.conversation_history:
+        if message["role"] == "user":
+            st.write("You:", message["content"])
+        elif message["role"] == "assistant":
+            st.write("Bot:", message["content"])
 
 if __name__ == "__main__":
     main()
