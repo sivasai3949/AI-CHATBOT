@@ -30,6 +30,7 @@ def main():
 
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
+        st.session_state.chat_log = []
 
     user_input = st.text_input("Type your message...")
 
@@ -41,15 +42,15 @@ def main():
             response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
             st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-            st.write("You:", user_input)
-            st.write("Bot:", response)
+            st.session_state.chat_log.append(("You", user_input))
+            st.session_state.chat_log.append(("Bot", response))
 
     # Display the conversation history
-    for message in st.session_state.conversation_history:
-        if message["role"] == "user":
-            st.write("You:", message["content"])
-        elif message["role"] == "assistant":
-            st.write("Bot:", message["content"])
+    for sender, message in st.session_state.chat_log:
+        if sender == "You":
+            st.write(f"You: {message}")
+        elif sender == "Bot":
+            st.write(f"Bot: {message}")
 
 if __name__ == "__main__":
     main()
