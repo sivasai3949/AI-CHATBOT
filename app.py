@@ -33,7 +33,7 @@ def main():
     conversation_history = []
 
     while True:
-        user_input = st.text_input("You:", key="user_input")
+        user_input = st.text_input("You:")
 
         api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
