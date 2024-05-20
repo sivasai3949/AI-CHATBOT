@@ -49,8 +49,8 @@ def main():
     for sender, message in st.session_state.chat_log:
         if sender == "You":
             st.write(f"You: {message}")
-        elif sender == "Bot":
-            st.write(f"Bot: {message}")
+        elif sender == "Counsellor":
+            st.write(f"Counsellor: {message}")
 
 if __name__ == "__main__":
     main()
