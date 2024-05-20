@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-def get_ai_response(input_text, api_key):
+def get_ai_response(input_text, api_key, conversation_history):
     url = "https://api.openai.com/v1/chat/completions"
 
     headers = {
@@ -12,8 +12,7 @@ def get_ai_response(input_text, api_key):
 
     data = {
         "model": "gpt-3.5-turbo",  # Updated model
-        "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
+        "messages": conversation_history + [
             {"role": "user", "content": input_text}
         ]
     }
@@ -31,15 +30,27 @@ def main():
 
     st.write("Hi there! How can I assist you today?")
 
-    user_input = st.text_input("Type your message...")
+    conversation_history = []
 
-    api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
+    while True:
+        user_input = st.text_input("You:", key="user_input")
 
-    if st.button("Send"):
-        if user_input:
-            st.write("You:", user_input)
-            response = get_ai_response(user_input, api_key)
-            st.write("Bot:", response)
+        api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
+
+        if st.button("Send"):
+            if user_input:
+                conversation_history.append({"role": "user", "content": user_input})
+                response = get_ai_response(user_input, api_key, conversation_history)
+                conversation_history.append({"role": "bot", "content": response})
+                st.write("Bot:", response)
+            else:
+                st.write("Please type something.")
+
+        if st.button("Clear Conversation"):
+            conversation_history = []
+
+        if st.button("End Conversation"):
+            break
 
 if __name__ == "__main__":
     main()
