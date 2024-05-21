@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 import requests
 import json
 
@@ -32,9 +32,9 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
+    user_input = st.text_input("Type your message...")
 
-    user_input = st.text_input("Type your message...", key="user_input")
+    api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
     if st.button("Send"):
         if user_input:
@@ -44,9 +44,6 @@ def main():
 
             st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
-
-            # Clear the input field after sending the message by setting its value to an empty string
-            st.session_state.user_input = ""
 
     # Display the conversation history
     for sender, message in st.session_state.chat_log:
