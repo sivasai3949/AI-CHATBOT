@@ -48,11 +48,9 @@ def main():
     # Display the conversation history
     for sender, message in st.session_state.chat_log:
         if sender == "You":
-            st.write(f"You: {message}")
+            st.markdown(f"**You:** {message}")
         elif sender == "Counsellor":
-            st.write(f"Counsellor: {message}")
+            st.markdown(f"<div style='background-color: #f1f1f1; padding: 10px; border-radius: 5px;'><strong>Counsellor:</strong> {message}</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
-
-
