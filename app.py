@@ -29,8 +29,11 @@ def main():
     st.write("Hi there! How can I assist you today?")
 
     if 'conversation_history' not in st.session_state:
-        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
-        st.session_state.chat_log = []
+        st.session_state.conversation_history = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "assistant", "content": "Hello! I'm here to help. How may I assist you today?"}
+        ]
+        st.session_state.chat_log = [("Counsellor", "Hello! I'm here to help. How may I assist you today?")]
 
     user_input = st.text_input("Type your message...")
 
