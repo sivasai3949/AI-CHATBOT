@@ -32,28 +32,25 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    user_input = st.text_input("Type your message...")
+    user_input = st.text_input("Type your message...", key="user_input")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-    col1, col2 = st.columns(2)
+    if st.button("Send"):
+        if user_input:
+            st.session_state.conversation_history.append({"role": "user", "content": user_input})
+            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
+            st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-    with col1:
-        if st.button("Send"):
-            if user_input:
-                st.session_state.conversation_history.append({"role": "user", "content": user_input})
-                response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
-                st.session_state.conversation_history.append({"role": "assistant", "content": response})
+            st.session_state.chat_log.append(("You", user_input))
+            st.session_state.chat_log.append(("Counsellor", response))
+            
+            # Clear the input field after sending the message
+            st.experimental_set_query_params(user_input="")
 
-                st.session_state.chat_log.append(("You", user_input))
-                st.session_state.chat_log.append(("Counsellor", response))
-
-    with col2:
-        if st.button("Clear"):
-            st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
-            st.session_state.chat_log = []
-            st.experimental_rerun()  # To refresh the app interface
-
+    if st.button("Clear"):
+        st.experimental_set_query_params(user_input="")
+    
     # Display the conversation history
     for sender, message in st.session_state.chat_log:
         if sender == "You":
