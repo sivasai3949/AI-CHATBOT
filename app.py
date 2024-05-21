@@ -24,6 +24,19 @@ def get_ai_response(input_text, api_key, conversation_history):
     else:
         return "Error: Failed to get response from OpenAI API"
 
+def submit_input():
+    user_input = st.session_state.user_input
+    if user_input:
+        st.session_state.conversation_history.append({"role": "user", "content": user_input})
+        response = get_ai_response(user_input, st.secrets["OPENAI_API_KEY"], st.session_state.conversation_history)
+        st.session_state.conversation_history.append({"role": "assistant", "content": response})
+
+        st.session_state.chat_log.append(("You", user_input))
+        st.session_state.chat_log.append(("Counsellor", response))
+        
+        # Clear the input field
+        st.session_state.user_input = ""
+
 def main():
     st.title("AI COUNSELLOR")
     st.write("Hi there! How can I assist you today?")
@@ -32,18 +45,11 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    user_input = st.text_input("Type your message...")
-
-    api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
+    # Add a text input field with on_change callback
+    st.text_input("Type your message...", key="user_input", on_change=submit_input)
 
     if st.button("Send"):
-        if user_input:
-            st.session_state.conversation_history.append({"role": "user", "content": user_input})
-            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
-            st.session_state.conversation_history.append({"role": "assistant", "content": response})
-
-            st.session_state.chat_log.append(("You", user_input))
-            st.session_state.chat_log.append(("Counsellor", response))
+        submit_input()
 
     # Display the conversation history
     st.markdown("<style>.user-bubble { background-color: #e6f7ff; padding: 10px; border-radius: 5px; margin-bottom: 10px; } .counsellor-bubble { background-color: #f1f1f1; padding: 10px; border-radius: 5px; margin-bottom: 10px; }</style>", unsafe_allow_html=True)
