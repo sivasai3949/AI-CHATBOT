@@ -46,11 +46,13 @@ def main():
             st.session_state.chat_log.append(("Counsellor", response))
 
     # Display the conversation history
+    st.markdown("<style>.user-bubble { background-color: #e6f7ff; padding: 10px; border-radius: 5px; margin-bottom: 10px; } .counsellor-bubble { background-color: #f1f1f1; padding: 10px; border-radius: 5px; margin-bottom: 10px; }</style>", unsafe_allow_html=True)
+    
     for sender, message in st.session_state.chat_log:
         if sender == "You":
-            st.markdown(f"**You:** {message}")
+            st.markdown(f"<div class='user-bubble'><strong>You:</strong> {message}</div>", unsafe_allow_html=True)
         elif sender == "Counsellor":
-            st.markdown(f"<div style='background-color: #f1f1f1; padding: 10px; border-radius: 5px;'><strong>Counsellor:</strong> {message}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='counsellor-bubble'><strong>Counsellor:</strong> {message}</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
