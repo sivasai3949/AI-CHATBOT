@@ -25,50 +25,73 @@ def get_ai_response(input_text, api_key, conversation_history):
         return "Error: Failed to get response from OpenAI API"
 
 def main():
-    st.title("AI COUNSELLOR")
-    st.write("Hi there! How can I assist you today?")
+    st.title("RoboTutor - Educational Chatbot")
+    html_temp = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RoboTutor - Educational Chatbot</title>
+        <style>
+            /* Include your CSS styles here */
+            /* Ensure to adjust URLs for static assets accordingly */
+        </style>
+    </head>
+    <body>
+        <!-- Include your HTML content here -->
+        <div class="chatbot-container">
+            <!-- Header -->
+            <header>
+                <h1 class="heading"><span>E</span><span>D</span><span>X</span><span>B</span><span>O</span><span>T</span></h1>
+                <img src="https://your-domain.com/static/Chatbot.gif" alt="Robot Icon" class="robot-icon">
+            </header>
+            <!-- Chat container -->
+            <div class="chat-container" id="chat-container">
+                <div class="chat">
+                    <div class="chat-bubble robot">Hi there! How can I assist you today?</div>
+                </div>
+            </div>
+            <!-- Input container -->
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
 
-    # Initialize session state variables if they don't exist
+        <!-- Include your JavaScript code here -->
+        <script>
+            // JavaScript code here
+            // Ensure to adjust URLs and other references accordingly
+        </script>
+    </body>
+    </html>
+    """
+    st.markdown(html_temp, unsafe_allow_html=True)
+
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    # Initialize user input in session state if it doesn't exist
-    if 'user_input' not in st.session_state:
-        st.session_state.user_input = ""
-
-    # Layout for user input and buttons
-    user_input = st.text_input("Type your message...", key="user_input")
+    user_input = st.text_input("Type your message...")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("Send"):
-            if st.session_state.user_input:
-                st.session_state.conversation_history.append({"role": "user", "content": st.session_state.user_input})
-                response = get_ai_response(st.session_state.user_input, api_key, st.session_state.conversation_history)
-                st.session_state.conversation_history.append({"role": "assistant", "content": response})
+    if st.button("Send"):
+        if user_input:
+            st.session_state.conversation_history.append({"role": "user", "content": user_input})
+            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
+            st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-                st.session_state.chat_log.append(("You", st.session_state.user_input))
-                st.session_state.chat_log.append(("Counsellor", response))
+            st.session_state.chat_log.append(("You", user_input))
+            st.session_state.chat_log.append(("Counsellor", response))
 
-                # Clear the user input after sending the message
-                st.session_state.user_input = ""
-                st.experimental_rerun()
-    with col2:
-        if st.button("Clear Input"):
-            st.session_state.user_input = ""
-            st.experimental_rerun()
-
-    # Display the conversation history with a gap between responses
-    st.write('<style>.message-gap { margin-top: 20px; }</style>', unsafe_allow_html=True)
-
+    # Display the conversation history
     for sender, message in st.session_state.chat_log:
         if sender == "You":
-            st.write(f"<div class='message-gap'>You: {message}</div>", unsafe_allow_html=True)
+            st.write(f"You: {message}")
         elif sender == "Counsellor":
-            st.write(f"<div class='message-gap'>Counsellor: {message}</div>", unsafe_allow_html=True)
+            st.write(f"Counsellor: {message}")
 
 if __name__ == "__main__":
     main()
