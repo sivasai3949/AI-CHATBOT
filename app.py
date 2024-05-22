@@ -28,41 +28,37 @@ def main():
     st.title("AI COUNSELLOR")
     st.write("Hi there! How can I assist you today?")
 
+    # Initialize session state variables if they don't exist
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    if 'user_input' not in st.session_state:
-        st.session_state.user_input = ""
+    # Layout for user input and buttons
+    user_input = st.text_input("Type your message...", key="user_input")
 
-    # Using a form to encapsulate the input and buttons
-    with st.form(key='input_form'):
-        col1, col2 = st.columns([3, 1])
-
-        with col1:
-            user_input = st.text_input("Type your message...", value=st.session_state.user_input, key="user_input")
-
-        with col2:
-            if st.form_submit_button("Clear Input"):
-                st.session_state.user_input = ""  # Clear the user input
-                st.experimental_rerun()
-
-        send_button = st.form_submit_button("Send")
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        send_button = st.button("Send")
+    with col2:
+        clear_button = st.button("Clear Input")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
     if send_button:
-        if st.session_state.user_input:
-            st.session_state.conversation_history.append({"role": "user", "content": st.session_state.user_input})
-            response = get_ai_response(st.session_state.user_input, api_key, st.session_state.conversation_history)
+        if user_input:
+            st.session_state.conversation_history.append({"role": "user", "content": user_input})
+            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
             st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-            st.session_state.chat_log.append(("You", st.session_state.user_input))
+            st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
 
-            # Clear the user input after sending the message
-            st.session_state.user_input = ""
+            st.session_state.user_input = ""  # Clear the user input after sending the message
             st.experimental_rerun()
+
+    if clear_button:
+        st.session_state.user_input = ""  # Clear the user input
+        st.experimental_rerun()
 
     # Display the conversation history with a gap between responses
     st.write('<style>.message-gap { margin-top: 20px; }</style>', unsafe_allow_html=True)
