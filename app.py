@@ -32,7 +32,14 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    user_input = st.text_input("Type your message...")
+    col1, col2 = st.columns([3, 1])
+
+    with col1:
+        user_input = st.text_input("Type your message...", key="user_input")
+
+    with col2:
+        if st.button("Clear Input"):
+            st.session_state.user_input = ""  # Clear the user input
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
@@ -45,13 +52,9 @@ def main():
             st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
             
+            # Clear the user input after sending the message
+            st.session_state.user_input = ""
             st.experimental_rerun()
-
-    if st.button("Clear"):
-        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
-        st.session_state.chat_log = []
-        
-        st.experimental_rerun()
 
     # Display the conversation history with a gap between responses
     st.write('<style>.message-gap { margin-top: 20px; }</style>', unsafe_allow_html=True)
