@@ -32,6 +32,9 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
+    if 'user_input' not in st.session_state:
+        st.session_state.user_input = ""
+
     col1, col2 = st.columns([3, 1])
 
     with col1:
