@@ -44,13 +44,23 @@ def main():
 
             st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
+            
+            st.experimental_rerun()
 
-    # Display the conversation history
+    if st.button("Clear"):
+        st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
+        st.session_state.chat_log = []
+        
+        st.experimental_rerun()
+
+    # Display the conversation history with a gap between responses
+    st.write('<style>.message-gap { margin-top: 20px; }</style>', unsafe_allow_html=True)
+
     for sender, message in st.session_state.chat_log:
         if sender == "You":
-            st.write(f"You: {message}")
+            st.write(f"<div class='message-gap'>You: {message}</div>", unsafe_allow_html=True)
         elif sender == "Counsellor":
-            st.write(f"Counsellor: {message}")
+            st.write(f"<div class='message-gap'>Counsellor: {message}</div>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
