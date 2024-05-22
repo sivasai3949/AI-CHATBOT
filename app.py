@@ -25,49 +25,8 @@ def get_ai_response(input_text, api_key, conversation_history):
         return "Error: Failed to get response from OpenAI API"
 
 def main():
-    st.title("RoboTutor - Educational Chatbot")
-    html_temp = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>RoboTutor - Educational Chatbot</title>
-        <style>
-            /* Include your CSS styles here */
-            /* Ensure to adjust URLs for static assets accordingly */
-        </style>
-    </head>
-    <body>
-        <!-- Include your HTML content here -->
-        <div class="chatbot-container">
-            <!-- Header -->
-            <header>
-                <h1 class="heading"><span>E</span><span>D</span><span>X</span><span>B</span><span>O</span><span>T</span></h1>
-                <img src="https://your-domain.com/static/Chatbot.gif" alt="Robot Icon" class="robot-icon">
-            </header>
-            <!-- Chat container -->
-            <div class="chat-container" id="chat-container">
-                <div class="chat">
-                    <div class="chat-bubble robot">Hi there! How can I assist you today?</div>
-                </div>
-            </div>
-            <!-- Input container -->
-            <div class="input-container">
-                <input type="text" id="user-input" placeholder="Type your message...">
-                <button id="send-btn">Send</button>
-            </div>
-        </div>
-
-        <!-- Include your JavaScript code here -->
-        <script>
-            // JavaScript code here
-            // Ensure to adjust URLs and other references accordingly
-        </script>
-    </body>
-    </html>
-    """
-    st.markdown(html_temp, unsafe_allow_html=True)
+    st.title("AI COUNSELLOR")
+    st.write("Hi there! How can I assist you today?")
 
     if 'conversation_history' not in st.session_state:
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
@@ -95,3 +54,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
