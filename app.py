@@ -40,7 +40,7 @@ def main():
         col1, col2 = st.columns([3, 1])
 
         with col1:
-            user_input = st.text_input("Type your message...", key="user_input")
+            user_input = st.text_input("Type your message...", value=st.session_state.user_input, key="user_input")
 
         with col2:
             if st.form_submit_button("Clear Input"):
@@ -52,12 +52,12 @@ def main():
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
     if send_button:
-        if user_input:
-            st.session_state.conversation_history.append({"role": "user", "content": user_input})
-            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
+        if st.session_state.user_input:
+            st.session_state.conversation_history.append({"role": "user", "content": st.session_state.user_input})
+            response = get_ai_response(st.session_state.user_input, api_key, st.session_state.conversation_history)
             st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-            st.session_state.chat_log.append(("You", user_input))
+            st.session_state.chat_log.append(("You", st.session_state.user_input))
             st.session_state.chat_log.append(("Counsellor", response))
 
             # Clear the user input after sending the message
