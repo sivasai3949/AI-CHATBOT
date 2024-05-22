@@ -32,12 +32,11 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
-    user_input = st.text_input("Type your message...", key="user_input")
+    user_input = st.text_input("Type your message...")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-    if st.button("Send") or (user_input and st.session_state.user_input != user_input):
-        st.session_state.user_input = user_input
+    if st.button("Send"):
         if user_input:
             st.session_state.conversation_history.append({"role": "user", "content": user_input})
             response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
