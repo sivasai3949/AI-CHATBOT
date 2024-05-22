@@ -35,18 +35,23 @@ def main():
     if 'user_input' not in st.session_state:
         st.session_state.user_input = ""
 
-    col1, col2 = st.columns([3, 1])
+    # Using a form to encapsulate the input and buttons
+    with st.form(key='input_form'):
+        col1, col2 = st.columns([3, 1])
 
-    with col1:
-        user_input = st.text_input("Type your message...", key="user_input")
+        with col1:
+            user_input = st.text_input("Type your message...", key="user_input")
 
-    with col2:
-        if st.button("Clear Input"):
-            st.session_state.user_input = ""  # Clear the user input
+        with col2:
+            if st.form_submit_button("Clear Input"):
+                st.session_state.user_input = ""  # Clear the user input
+                st.experimental_rerun()
+
+        send_button = st.form_submit_button("Send")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-    if st.button("Send"):
+    if send_button:
         if user_input:
             st.session_state.conversation_history.append({"role": "user", "content": user_input})
             response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
@@ -54,7 +59,7 @@ def main():
 
             st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
-            
+
             # Clear the user input after sending the message
             st.session_state.user_input = ""
             st.experimental_rerun()
