@@ -33,22 +33,33 @@ def main():
         st.session_state.conversation_history = [{"role": "system", "content": "You are a helpful assistant."}]
         st.session_state.chat_log = []
 
+    # Initialize user input in session state if it doesn't exist
+    if 'user_input' not in st.session_state:
+        st.session_state.user_input = ""
+
     # Layout for user input and buttons
-    user_input = st.text_input("Type your message...")
+    user_input = st.text_input("Type your message...", key="user_input")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
-    if st.button("Send"):
-        if user_input:
-            st.session_state.conversation_history.append({"role": "user", "content": user_input})
-            response = get_ai_response(user_input, api_key, st.session_state.conversation_history)
-            st.session_state.conversation_history.append({"role": "assistant", "content": response})
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("Send"):
+            if st.session_state.user_input:
+                st.session_state.conversation_history.append({"role": "user", "content": st.session_state.user_input})
+                response = get_ai_response(st.session_state.user_input, api_key, st.session_state.conversation_history)
+                st.session_state.conversation_history.append({"role": "assistant", "content": response})
 
-            st.session_state.chat_log.append(("You", user_input))
-            st.session_state.chat_log.append(("Counsellor", response))
+                st.session_state.chat_log.append(("You", st.session_state.user_input))
+                st.session_state.chat_log.append(("Counsellor", response))
 
-    if st.button("Clear Input"):
-        user_input = ""  # Reset the input
+                # Clear the user input after sending the message
+                st.session_state.user_input = ""
+                st.experimental_rerun()
+    with col2:
+        if st.button("Clear Input"):
+            st.session_state.user_input = ""
+            st.experimental_rerun()
 
     # Display the conversation history with a gap between responses
     st.write('<style>.message-gap { margin-top: 20px; }</style>', unsafe_allow_html=True)
