@@ -34,13 +34,13 @@ def main():
         st.session_state.chat_log = []
 
     # Layout for user input and buttons
-    user_input = st.text_input("Type your message...", key="user_input")
-
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        send_button = st.button("Send")
-    with col2:
-        clear_button = st.button("Clear Input")
+    with st.form(key='input_form'):
+        user_input = st.text_input("Type your message...", key="user_input")
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            send_button = st.form_submit_button("Send")
+        with col2:
+            clear_button = st.form_submit_button("Clear Input")
 
     api_key = st.secrets["OPENAI_API_KEY"]  # Retrieve API key from Streamlit Secrets
 
@@ -53,11 +53,13 @@ def main():
             st.session_state.chat_log.append(("You", user_input))
             st.session_state.chat_log.append(("Counsellor", response))
 
-            st.session_state.user_input = ""  # Clear the user input after sending the message
+            # Clear the user input after sending the message
+            st.session_state.user_input = ""
             st.experimental_rerun()
 
     if clear_button:
-        st.session_state.user_input = ""  # Clear the user input
+        # Clear the user input
+        st.session_state.user_input = ""
         st.experimental_rerun()
 
     # Display the conversation history with a gap between responses
